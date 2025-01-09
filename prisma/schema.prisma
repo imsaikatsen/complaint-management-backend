@@ -1,0 +1,36 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id       String  @id @default(uuid())  // UUID as String
+  name     String
+  email    String  @unique
+  password String
+  isAdmin  Boolean @default(false) // Defaults to Customer
+  createdAt DateTime @default(now())
+
+  tickets          Ticket[] @relation("CustomerTickets") // Customer's tickets
+  assignedTickets  Ticket[] @relation("AdminTickets")    // Admin's assigned tickets
+}
+
+model Ticket {
+  id          Int      @id @default(autoincrement())
+  subject     String
+  description String
+  status      String   @default("Open")
+  customerId  String   // Change this to String to match the User's id field
+  adminId     String?  // Change this to String to match the User's id field
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User     @relation("CustomerTickets", fields: [customerId], references: [id])
+  admin       User?    @relation("AdminTickets", fields: [adminId], references: [id])
+}
+
+
