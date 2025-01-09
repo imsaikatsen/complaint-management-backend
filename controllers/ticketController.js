@@ -59,8 +59,6 @@ exports.getTAllickets = async (req, res) => {
 
 exports.getTicketById = async (req, res) => {
   const { id } = req.params;
-  console.log('Received ID:', id); // Check what's being passed
-
   if (!id || isNaN(id)) {
     return res.status(400).json({ error: 'Invalid ticket ID format' });
   }
@@ -131,6 +129,15 @@ exports.getCustomerTickets = async (req, res) => {
     // Fetch tickets associated with the logged-in customer
     const tickets = await prisma.ticket.findMany({
       where: { customerId: customerId },
+      select: {
+        id: true,
+        subject: true,
+        description: true,
+        status: true,
+        reply: true, // Include admin reply
+        createdAt: true,
+        updatedAt: true,
+      },
     });
 
     res.json({ tickets });
@@ -225,5 +232,32 @@ exports.deleteTicket = async (req, res) => {
         'An unexpected error occurred while deleting the ticket. Please try again later.',
       error: error.message,
     });
+  }
+};
+
+exports.replyToTicket = async (req, res) => {
+  const { id } = req.params; // Ticket ID
+  const { reply } = req.body; // Reply content from request body
+
+  // Validate input
+  if (!reply || reply.trim() === '') {
+    return res.status(400).json({ error: 'Reply content cannot be empty' });
+  }
+
+  try {
+    // Update the ticket with the reply
+    const ticket = await prisma.ticket.update({
+      where: { id: parseInt(id, 10) }, // Convert ID to integer
+      data: {
+        reply, // Update the reply field
+        status: 'Replied', // Update the ticket status
+        updatedAt: new Date(), // Update the updatedAt timestamp
+      },
+    });
+
+    res.json({ message: 'Reply added successfully', ticket });
+  } catch (error) {
+    console.error('Error adding reply:', error);
+    res.status(500).json({ error: 'Failed to update ticket' });
   }
 };

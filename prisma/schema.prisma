@@ -26,6 +26,7 @@ model Ticket {
   status      String   @default("Open")
   customerId  String   // Change this to String to match the User's id field
   adminId     String?  // Change this to String to match the User's id field
+  reply       String?  // Nullable to store admin's reply
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

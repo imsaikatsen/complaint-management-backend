@@ -20,6 +20,7 @@ const {
   assignTicketToAdmin,
   updateTicket,
   deleteTicket,
+  replyToTicket,
 } = require('../controllers/ticketController');
 router.post('/tickets/create', authenticate, validateTicket, createTicket);
 router.get('/tickets/', authenticate, getTAllickets);
@@ -29,5 +30,6 @@ router.patch('/tickets/:id/status', authenticate, updateTicketStatus);
 router.patch('/tickets/:id/assign', authenticate, assignTicketToAdmin);
 router.put('/tickets/updateTicket/:id', authenticate, updateTicket);
 router.delete('/tickets/:id', authenticate, deleteTicket);
+router.post('/tickets/:id/reply', authenticate, replyToTicket);
 
 module.exports = router;
