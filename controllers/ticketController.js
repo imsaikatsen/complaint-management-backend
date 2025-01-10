@@ -4,9 +4,6 @@ const prisma = new PrismaClient();
 
 exports.createTicket = async (req, res) => {
   try {
-    console.log('Request body:', req.body);
-    console.log('Authenticated user:', req.user);
-
     const { subject, description } = req.body;
 
     if (!subject || !description) {
@@ -64,7 +61,7 @@ exports.getTicketById = async (req, res) => {
   }
 
   try {
-    const ticketId = parseInt(id, 10); // Ensure it's parsed as an integer
+    const ticketId = parseInt(id, 10);
 
     const ticket = await prisma.ticket.findUnique({
       where: {
@@ -134,7 +131,7 @@ exports.getCustomerTickets = async (req, res) => {
         subject: true,
         description: true,
         status: true,
-        reply: true, // Include admin reply
+        reply: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -148,8 +145,8 @@ exports.getCustomerTickets = async (req, res) => {
 };
 
 exports.updateTicket = async (req, res) => {
-  const { id } = req.params; // Ticket ID from URL
-  const { subject, description, status } = req.body; // Fields to update
+  const { id } = req.params;
+  const { subject, description, status } = req.body;
 
   console.log('Updating Ticket ID:', id);
 
@@ -158,7 +155,7 @@ exports.updateTicket = async (req, res) => {
   }
 
   try {
-    const ticketId = parseInt(id, 10); // Ensure ID is an integer
+    const ticketId = parseInt(id, 10);
 
     // Check if there are fields to update
     if (!subject && !description && !status) {
@@ -236,8 +233,8 @@ exports.deleteTicket = async (req, res) => {
 };
 
 exports.replyToTicket = async (req, res) => {
-  const { id } = req.params; // Ticket ID
-  const { reply } = req.body; // Reply content from request body
+  const { id } = req.params;
+  const { reply } = req.body;
 
   // Validate input
   if (!reply || reply.trim() === '') {
@@ -247,11 +244,11 @@ exports.replyToTicket = async (req, res) => {
   try {
     // Update the ticket with the reply
     const ticket = await prisma.ticket.update({
-      where: { id: parseInt(id, 10) }, // Convert ID to integer
+      where: { id: parseInt(id, 10) },
       data: {
-        reply, // Update the reply field
-        status: 'Replied', // Update the ticket status
-        updatedAt: new Date(), // Update the updatedAt timestamp
+        reply,
+        status: 'Replied',
+        updatedAt: new Date(),
       },
     });
 

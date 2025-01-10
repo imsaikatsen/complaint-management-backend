@@ -28,6 +28,8 @@ exports.login = async (req, res) => {
   }
 };
 
+//Register
+
 exports.register = async (req, res) => {
   const { name, email, password, isAdminSecret } = req.body;
   try {
@@ -42,7 +44,6 @@ exports.register = async (req, res) => {
         name,
         email,
         password: hashedPassword,
-        isAdmin: isAdminSecret === process.env.ADMIN_SECRET, // Only admins can register with the secret
       },
     });
 
